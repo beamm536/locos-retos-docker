@@ -1,0 +1,45 @@
+services:
+  web1:
+    build:
+      context: ./httpd
+      dockerfile: Dockerfile-httpd
+    networks:
+      mynetwork:
+        ipv4_address: 172.20.0.2
+
+  web2:
+    build:
+      context: ./httpd
+      dockerfile: Dockerfile-httpd
+    networks:
+      mynetwork:
+        ipv4_address: 172.20.0.3
+
+  firewall:
+    build:
+      context: ./firewall
+      dockerfile: Dockerfile-firewall
+    cap_add:
+      - NET_ADMIN
+    networks:
+      mynetwork:
+        ipv4_address: 172.20.0.4
+
+  parrot:
+    build:
+      context: ./parrotsec
+      dockerfile: Dockerfile-parrot
+    networks:
+      mynetwork:
+        ipv4_address: 172.20.0.5
+    cap_add:
+      - SYS_ADMIN
+    stdin_open: true
+    tty: true
+
+networks:
+  mynetwork:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
